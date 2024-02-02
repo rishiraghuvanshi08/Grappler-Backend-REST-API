@@ -100,15 +100,14 @@ public class TeamMemberController {
      * @return ResponseEntity<?>
      */
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/{teamId}/add-new-member/{userId}")
-    public ResponseEntity<?> addNewMember(@PathVariable("userId") Long userId,
-                                            @PathVariable("teamId") Long teamId){
+    @PostMapping("/{teamId}/add-new-members")
+    public ResponseEntity<?> addNewMember(@PathVariable("teamId") Long teamId, @RequestBody List<Long> userIds){
         String debugUuid = UUID.randomUUID().toString();
         try {
             log.info("Add New Member API Called, UUID {}", debugUuid);
-            TeamMembers teamMember = teamMembersService.addNewMember(teamId, userId);
+            List<TeamMembers> teamMembers = teamMembersService.addNewMembers(teamId, userIds);
 
-            return new ResponseEntity<>(new CustomResponseMessage(true, "New Member Added Successfully."), HttpStatus.OK);
+            return new ResponseEntity<>(new CustomResponseMessage(true, "New Members Added Successfully."), HttpStatus.OK);
         }
         catch (UserNotFoundException e) {
             log.error("UUID {} UserNotFoundException In Add New Member API, Exception {}", debugUuid, e.getMessage());

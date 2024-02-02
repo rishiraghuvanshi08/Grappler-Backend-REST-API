@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,43 +36,46 @@ public class TeamMembersService {
     private UserRepository userRepository;
 
     /**
-     * For Adding New Team Member
+     * For Adding New Team Members
      *
      * @return TeamMembers
      */
-    public TeamMembers addNewMember(Long teamId, Long userId) {
+    public List<TeamMembers> addNewMembers(Long teamId, List<Long> userIds) {
         try {
-            log.info("Add Team Member Service Called");
-            Optional<TeamMembers> optionalTeamMember = teamMemberRepository.findByTeamIdAndUserId(teamId, userId);
+            log.info("Add Team Members Service Called");
+            List<TeamMembers> addedMembers = new ArrayList<>();
 
-            if(!optionalTeamMember.isPresent()) {
-                Optional<Team> optionalTeam = teamRepository.findById(teamId);
+            for (Long userId : userIds) {
+                Optional<TeamMembers> optionalTeamMember = teamMemberRepository.findByTeamIdAndUserId(teamId, userId);
 
-                if (optionalTeam.isPresent()) {
-                    Optional<Users> optionalUser = userRepository.findById(userId);
-                    if (optionalUser.isPresent()) {
-                        TeamMembers teamMembers = new TeamMembers(optionalTeam.get(), optionalUser.get());
+                if (!optionalTeamMember.isPresent()) {
+                    Optional<Team> optionalTeam = teamRepository.findById(teamId);
 
-                        return teamMemberRepository.save(teamMembers);
+                    if (optionalTeam.isPresent()) {
+                        Optional<Users> optionalUser = userRepository.findById(userId);
+                        if (optionalUser.isPresent()) {
+                            TeamMembers teamMembers = new TeamMembers(optionalTeam.get(), optionalUser.get());
+                            addedMembers.add(teamMemberRepository.save(teamMembers));
+                        } else {
+                            log.error("Add Team Members Service throws UserNotFoundException for UserID: {}", userId);
+                            throw new UserNotFoundException("User Not Found With ID: " + userId);
+                        }
                     } else {
-                        log.error("Add Team Member Service throws UserNotFoundException");
-                        throw new UserNotFoundException("User Not Found With ID : " + userId);
+                        log.error("Add Team Members Service throws TeamNotFoundException for TeamID: {}", teamId);
+                        throw new TeamNotFoundException("Team Not Found With ID: " + teamId);
                     }
                 } else {
-                    log.error("Add Team Member Service throws TeamNotFoundException");
-                    throw new TeamNotFoundException("Team Not Found With ID : " + teamId);
+                    log.error("Add Team Members Service throws MemberAlreadyPresentException for UserID: {}", userId);
+                    throw new MemberAlreadyPresentException("Member Already Present In Same Team for UserID: " + userId);
                 }
             }
-            else {
-                log.error("Add Team Member Service throws MemberAlreadyPresentException");
-                throw new MemberAlreadyPresentException("Member Already Present In Same Team.");
-            }
-        }
-        catch (Exception e) {
-            log.error("Exception In Add Team Member Exception {}", e.getMessage());
+            return addedMembers;
+        } catch (Exception e) {
+            log.error("Exception In Add Team Members Service Exception: {}", e.getMessage());
             throw e;
         }
     }
+
 
     /**
      * For Get Member Details
