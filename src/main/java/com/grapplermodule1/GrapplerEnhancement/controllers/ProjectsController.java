@@ -173,15 +173,15 @@ public class ProjectsController {
      * @return ResponseEntity<?>
      */
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/{projectId}/teams/{teamId}")
-    public ResponseEntity<?> assignTeamToProject(@PathVariable Long projectId, @PathVariable Long teamId) {
+    @PostMapping("/{projectId}/teams")
+    public ResponseEntity<?> assignTeamToProject(@PathVariable Long projectId, @RequestBody List<Long> teamIds) {
         String debugUuid = UUID.randomUUID().toString();
         try {
             log.info("Assign Team To Project API Called, UUID{}", debugUuid);
-            TeamDTO addedTeam = projectService.assignTeam(projectId, teamId);
-            if (addedTeam != null) {
+            List<TeamDTO> addedTeams = projectService.assignTeams(projectId, teamIds);
+            if (addedTeams != null) {
                 log.info("Assign Team To Project API Returning Response Entity With OK, UUID{}", debugUuid);
-                return new ResponseEntity<>(new CustomResponse<>(true, "Team With ID : " + teamId + " Successfully Added To Project With ID : " + projectId, addedTeam), HttpStatus.OK);
+                return new ResponseEntity<>(new CustomResponse<>(true, "Teams Successfully Added", addedTeams), HttpStatus.OK);
             } else {
                 log.info("UUID {} Project Not Created", debugUuid);
                 return new ResponseEntity<>(new CustomResponseMessage(false, "Failed. Please Try Again"), HttpStatus.BAD_GATEWAY);
