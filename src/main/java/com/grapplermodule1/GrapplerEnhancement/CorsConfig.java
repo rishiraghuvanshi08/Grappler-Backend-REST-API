@@ -16,7 +16,8 @@ public class CorsConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.addAllowedOrigin("http://localhost:3000"); // Add your React app's origin here
-        config.addAllowedOrigin("https://rishi-grappler-rbac.vercel.app"); // Add the additional origin here
+        // config.addAllowedOrigin("https://rishi-grappler-rbac.vercel.app"); // Add the additional origin here
+        config.addAllowedOrigin("https://rishi-argon-tracking.vercel.app");
 
         config.addAllowedMethod("*");
         config.addAllowedHeader("*");
