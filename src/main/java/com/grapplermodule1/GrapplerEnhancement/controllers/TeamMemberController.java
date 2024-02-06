@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,15 +42,16 @@ public class TeamMemberController {
     @GetMapping("/{teamId}")
     public ResponseEntity<?> getTeamMembers(@PathVariable("teamId") Long teamId){
         String debugUuid = UUID.randomUUID().toString();
+        List<TeamMembersDTO> emptyList = new ArrayList<>();
         try {
-            log.info("Get Team Hierarchy By Id API Called, UUID {}", debugUuid);
+            log.info("Get Team Members By Id API Called, UUID {}", debugUuid);
             List<TeamMembersDTO> optionalListOfUsers = hierarchyService.getTeamHierarchyById(teamId);
 
             return new ResponseEntity<>(optionalListOfUsers, HttpStatus.OK);
         }
         catch (TeamMembersNotFoundException e) {
             log.error("UUID {} TeamMembersNotFoundException In Get Team By Id API, Exception {}", debugUuid, e.getMessage());
-            return new ResponseEntity<>(new CustomResponse<>(false, e.getMessage(), null), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(emptyList, HttpStatus.OK);
         }
         catch (TeamNotFoundException e) {
             log.error("UUID {} TeamNotFoundException In Get Team By Id API, Exception {}", debugUuid, e.getMessage());
