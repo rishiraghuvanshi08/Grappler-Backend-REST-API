@@ -67,8 +67,8 @@ public class EmailService {
             Optional<Users> user = userRepository.findByEmail(email);
             user.get().setPassword(passwordEncoder.encode(password));
             userRepository.save(user.get());
-            String emailContent = "Hi!\n\nYour password for the Grappler-Enhancement application has been updated. Below are your new credentials:\n\n"
-                    + "Grappler -Enhancement\n\nJoin using the following credentials:\n\n"
+            String emailContent = "Hi!\n\nYour password for the Argon-Tracking application has been updated. Below are your new credentials:\n\n"
+                    + "Argon-Tracking\n\nJoin using the following credentials:\n\n"
                     + "Email:  " + email + "\nPassword:  " + password;
             SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
             simpleMailMessage.setFrom(sender);
