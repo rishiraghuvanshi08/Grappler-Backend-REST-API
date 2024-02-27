@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.grapplermodule1.GrapplerEnhancement.GrapplerEnhancementApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 40.72 s - in com.grapplermodule1.GrapplerEnhancement.GrapplerEnhancementApplicationTests
