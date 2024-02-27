@@ -36,7 +36,8 @@ public class ProjectService {
     String debugUuid = UUID.randomUUID().toString();
     try {
       log.info("Getting List of all Projects");
-      List<ProjectDTO> projectDTOList = projectRepository.findListOfProjects();
+      List<ProjectDTO> projectDTOList = new ArrayList<>();
+      projectDTOList = projectRepository.findListOfProjects();
 
       if (!projectDTOList.isEmpty()) {
         log.info("Got List of all Projects that is present in db");
@@ -46,7 +47,7 @@ public class ProjectService {
         return projectDTOList;
       } else {
         log.info("Throws exception because there no project found with UUID {}", debugUuid);
-        throw new ProjectNotFoundException("Project not Found");
+        return projectDTOList;
       }
     } catch (Exception e) {
       log.info("Exception In Fetch All Projects Exception {}", e.getMessage());
